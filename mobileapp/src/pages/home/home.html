@@ -1,0 +1,173 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="presentPopover($event)">
+          <ion-icon style="font-size: 150%;color:#fff" name="ios-information-circle-outline"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-segment [(ngModel)]="page" mode="md">
+      <ion-segment-button value="balance" [disabled]="isDisabled" style="color:#003662;">
+        <ion-icon name="logo-bitcoin" style="color:#fff;"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button value="settings">
+        <ion-icon name="settings" style="color:#fff;" ></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="reload()">
+          <ion-icon style="font-size: 150%;color:#fff" name="refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content style="background-color:#ebebeb;">
+  <div [ngSwitch]="page" style="padding-bottom:5px;">
+    <span *ngSwitchCase="'balance'">
+      <div class="rounded" style="margin-top:1%">
+        <ion-row>
+          <ion-col col-1 style="padding-left:5%;padding-top:3%;">
+            <ion-icon name="logo-bitcoin" style="font-size: 1.5em;color:#003662"></ion-icon>
+          </ion-col>
+          <ion-col col-11 style="padding-left:4%;padding-top:4%;" class="middle">
+            <span style="color:#003662;"><b>Account balance</b></span>
+          </ion-col>
+        </ion-row>
+        <h3 class="h2margins" style="width: 100%; text-align: center;color:#0084d4;">{{total | number: '1.8-8'}} <span style="font-size: 70%;color:#003662"><b>{{pcc}}</b></span></h3>
+        <h3 class="h2margins" style="width: 100%; text-align: center;color:#0084d4;">{{ftotal * btcprice * fcurrency | number: '1.2-2'}} <span style="font-size: 70%;color:#003662"><b>{{pfc}}</b></span></h3>   
+      </div>
+      <div class="rounded" style="margin-top:1%;" *ngIf="mining!=0">
+        <ion-row>
+          <ion-col col-1 style="padding-left:5%;padding-top:3%;">
+            <ion-icon name="color-palette" style="font-size: 1.5em;color:#003662"></ion-icon>
+          </ion-col>
+          <ion-col col-11 style="padding-left:4%;padding-top:4%;" class="middle">
+            <span style="color:#003662;"><b>Currently mining</b></span>
+          </ion-col>
+        </ion-row>
+        <ion-item no-padding no-lines style="border-bottom:0;margin-bottom:1%; border-bottom:0px;" *ngFor="let row of coins1 | orderBy: order" (click)="presentcoin(row)" [ngClass]="{'show': row.data.personal.hashrate > 0, 'noshow': row.data.personal.hashrate == 0}">
+          <ion-row no-padding>
+              <ion-col col-2 no-padding align-self-center>
+                  <ion-avatar item-start>
+                      <img style="margin-left:15%" class="center" *ngIf="row.coin != 'myriadcoin-yescrypt' && row.coin != 'myriadcoin-skein'&& row.coin != 'myriadcoin-groestl' && row.coin != 'digibyte-qubit' && row.coin != 'digibyte-skein' && row.coin != 'digibyte-groestl'" src="assets/imgs/{{row.coin}}.png">
+                      <img style="margin-left:15%" class="center" *ngIf="row.coin == 'myriadcoin-yescrypt' || row.coin == 'myriadcoin-skein' || row.coin == 'myriadcoin-groestl'" src="assets/imgs/myriad.png">
+                      <img style="margin-left:15%" class="center" *ngIf="row.coin == 'digibyte-qubit' || row.coin == 'digibyte-skein' || row.coin == 'digibyte-groestl'" src="assets/imgs/digibyte.png">
+                    </ion-avatar>
+              </ion-col>
+              <ion-col offset-1 col-6 no-padding align-self-center>
+                  <p text-center style="font-size: 1.6rem;color:#0084d4;"><b>{{row.data.balance.confirmed+row.data.balance_for_auto_exchange.confirmed+row.data.balance_on_exchange | number: '1.8-8'}}</b></p>  
+                  <p text-center style="font-size: 1.6rem;color:#0084d4;"><b *ngIf="row.data.balance.unconfirmed || row.data.balance_for_auto_exchange.unconfirmed">({{row.data.balance.unconfirmed+row.data.balance_for_auto_exchange.unconfirmed | number: '1.8-8'}})</b></p>    
+              </ion-col>
+              <ion-col col-3 no-padding align-self-center>
+                  <p text-right style="font-size: 1.3rem;color:#003662"><b>{{row.value/ncurrency | number: '1.8-8'}}</b></p>
+                  <p text-right style="font-size: 1.3rem;color:#003662"><b>{{row.value*btcprice*fcurrency | number: '1.2-2'}}</b></p>
+              </ion-col>
+            </ion-row>
+          </ion-item> 
+      </div>
+      <div class="rounded" style="margin-top:1%;">
+        <ion-row>
+          <ion-col col-1 style="padding-left:5%;padding-top:3%;">
+            <ion-icon name="calculator" style="font-size: 1.5em;color:#003662"></ion-icon>
+          </ion-col>
+          <ion-col col-11 style="padding-left:4%;padding-top:4%;" class="middle">
+            <span style="color:#003662;"><b>Coin balances</b></span>
+          </ion-col>
+        </ion-row>
+        <ion-item no-padding no-lines style="border-bottom:0;margin-bottom:1%; border-bottom:0px;" *ngFor="let row of coins1 | orderBy: order" (click)="presentcoin(row)" [ngClass]="{'noshow': row.data.personal.hashrate != 0, 'show': row.data.personal.hashrate == 0}">
+          <ion-row no-padding>
+              <ion-col col-2 no-padding align-self-center>
+                  <ion-avatar item-start>
+                      <img style="margin-left:15%" class="center" *ngIf="row.coin != 'myriadcoin-yescrypt' && row.coin != 'myriadcoin-skein'&& row.coin != 'myriadcoin-groestl' && row.coin != 'digibyte-qubit' && row.coin != 'digibyte-skein' && row.coin != 'digibyte-groestl'" src="assets/imgs/{{row.coin}}.png">
+                      <img style="margin-left:15%" class="center" *ngIf="row.coin == 'myriadcoin-yescrypt' || row.coin == 'myriadcoin-skein' || row.coin == 'myriadcoin-groestl'" src="assets/imgs/myriad.png">
+                      <img style="margin-left:15%" class="center" *ngIf="row.coin == 'digibyte-qubit' || row.coin == 'digibyte-skein' || row.coin == 'digibyte-groestl'" src="assets/imgs/digibyte.png">
+                    </ion-avatar>
+              </ion-col>
+              <ion-col offset-1 col-6 no-padding align-self-center>
+                  <p text-center style="font-size: 1.6rem;color:#0084d4;"><b>{{row.data.balance.confirmed+row.data.balance_for_auto_exchange.confirmed+row.data.balance_on_exchange | number: '1.8-8'}}</b></p>  
+                  <p text-center style="font-size: 1.6rem;color:#0084d4;"><b *ngIf="row.data.balance.unconfirmed || row.data.balance_for_auto_exchange.unconfirmed">({{row.data.balance.unconfirmed+row.data.balance_for_auto_exchange.unconfirmed | number: '1.8-8'}})</b></p>    
+              </ion-col>
+              <ion-col col-3 no-padding align-self-center>
+                  <p text-right style="font-size: 1.3rem;color:#003662"><b>{{row.value/ncurrency | number: '1.8-8'}}</b></p>
+                  <p text-right style="font-size: 1.3rem;color:#003662"><b>{{row.value*btcprice*fcurrency | number: '1.2-2'}}</b></p>
+              </ion-col>
+            </ion-row>
+          </ion-item> 
+      </div>
+      </span>
+
+      <div *ngSwitchCase="'settings'">
+          <div class="rounded" style="margin-top:2%">
+            <ion-row>
+              <ion-col col-1 style="padding-left:5%;padding-top:3%;">
+                <ion-icon name="construct" style="font-size: 1.5em;color:#003662"></ion-icon>
+              </ion-col>
+              <ion-col col-11 style="padding-left:4%;padding-top:4%;" class="middle">
+                <span style="color:#003662;"><b>Api key (enter or use QR code)</b></span>
+              </ion-col>
+            </ion-row>
+            <ion-item text-wrap style="margin-bottom:1%;">
+              <ion-textarea type="text" [(ngModel)]="apikey" style="color:#0084d4;border-bottom-color: #003662"></ion-textarea>
+            </ion-item>
+            <ion-row>
+              <ion-col col-8>
+                <button ion-button block (click)="saveapi(apikey)" style="background-color:#0084d4">Save</button>
+              </ion-col>
+              <ion-col col-4>
+                <button ion-button block style="background-color:#003662;" (click)="scanapi()"><ion-icon name="barcode" style="color:#fff;font-size:160%;"></ion-icon></button>
+              </ion-col>
+            </ion-row>
+          </div>
+          <div class="rounded" style="margin-top:2%">
+            <ion-row>
+              <ion-col col-1 style="padding-left:5%;padding-top:3%;">
+                <ion-icon name="logo-usd" style="font-size: 1.5em;color:#003662"></ion-icon>
+              </ion-col>
+              <ion-col col-11 style="padding-left:4%;padding-top:4%;" class="middle">
+                <span style="color:#003662;"><b>Select currency</b></span>
+              </ion-col>
+            </ion-row>
+            <ion-item text-wrap style="margin-top:1%;padding-left:4%;padding-right:4%;">
+              <ion-label floating style="margin-top:1px;color:#0084d4;">Primary cryptocurrency</ion-label>
+              <ion-select [(ngModel)]="pcc" (ngModelChange)="setpcc(pcc)" style="color:#003662">
+                <ion-option [value]="BTC">BTC</ion-option>
+                <ion-option [value]="LTC">LTC</ion-option>
+                <ion-option [value]="ETH">ETH</ion-option>
+              </ion-select>
+            </ion-item>
+            <ion-item text-wrap style="padding-left:4%;padding-right:4%;margin-bottom:1%;">
+              <ion-label floating style="margin-top:1px;color:#0084d4;">Primary fiat currency</ion-label>
+              <ion-select [(ngModel)]="pfc" (ngModelChange)="setpfc(pfc)">
+                <ion-option *ngFor="let curr of allcurrencyes" [value]="curr.c_name_short" [selected]="curr.c_name_short===pfc" >{{curr.c_name_short}} - {{curr.c_name_long}}</ion-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
+        <ion-footer style="background-color:#fff;">
+            <div class="rounded1" style="margin-top:2%">
+                <ion-item no-lines>    
+                    <ion-avatar item-start style="margin-right:5px;">
+                      <img src="assets/imgs/bitcoin.png">
+                    </ion-avatar>
+                    <p style="font-size: 1.3rem;"><b>bc1qme9zwmvzz72w3lwdxelaqvx4wl8h5942r7gpjx</b></p>
+                    <ion-icon item-end style="color:#333" name="copy" (click)="copy('bc1qme9zwmvzz72w3lwdxelaqvx4wl8h5942r7gpjx')"></ion-icon>
+                  </ion-item>
+                  <ion-item no-lines>    
+                      <ion-avatar item-start style="margin-right:5px;">
+                        <img src="assets/imgs/ethereum.png">
+                      </ion-avatar>
+                      <p style="font-size: 1.3rem;"><b>0xD0dB1a7039f0DB5660Baaf09Acd872aAef7560cf</b></p>
+                      <ion-icon item-end style="color:#333" name="copy" (click)="copy('0xD0dB1a7039f0DB5660Baaf09Acd872aAef7560cf')"></ion-icon>
+                  </ion-item> 
+                  <ion-item no-lines>    
+                      <ion-avatar item-start style="margin-right:5px;">
+                        <img src="assets/imgs/litecoin.png">
+                      </ion-avatar>
+                      <p style="font-size: 1.3rem;"><b>ltc1ql2qd0k4ma2led7mx0ejeu0mce3akfaqv5lqh9c</b></p>
+                      <ion-icon item-end style="color:#333" name="copy" (click)="copy('ltc1ql2qd0k4ma2led7mx0ejeu0mce3akfaqv5lqh9c')"></ion-icon>
+                  </ion-item> 
+            </div>
+        </ion-footer>
+      </div>   
+    </div>
+</ion-content>

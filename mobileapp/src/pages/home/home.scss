@@ -1,0 +1,145 @@
+page-home {
+    .segment-activated {
+        background-color:#fff;
+        color:#003662 !important; //as suggested by @Mr_Perfect
+        border-color:#003662 !important;
+      }
+      .segment-button {
+        background-color:#fff;
+        color:#666; //as suggested by @Mr_Perfect
+      }
+      .label {
+        margin-right: 0 ;
+        padding-right:0px;
+      }
+      .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+    .noshow {
+      display:none;
+    }
+    .show {
+      padding: 0 0 0 0;
+    }
+    .mining{
+      border-left: 10px solid green;
+    }
+    .nomining{
+      border-left: 10px solid white;
+    }
+    .custom-popover .popover-content {
+      width: 80%;
+      top: 70px;
+      left: 30px;
+      bottom: 70px
+    }
+    .load-bar {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      background-color: #fdba2c;
+    }
+    .bar {
+      content: "";
+      display: inline;
+      position: absolute;
+      width: 0;
+      height: 100%;
+      left: 50%;
+      text-align: center;
+    }
+    .bar:nth-child(1) {
+      background-color: #da4733;
+      animation: loading 3s linear infinite;
+    }
+    .bar:nth-child(2) {
+      background-color: #3b78e7;
+      animation: loading 3s linear 1s infinite;
+    }
+    .bar:nth-child(3) {
+      background-color: #fdba2c;
+      animation: loading 3s linear 2s infinite;
+    }
+    @keyframes loading {
+        from {left: 50%; width: 0;z-index:100;}
+        33.3333% {left: 0; width: 100%;z-index: 10;}
+        to {left: 0; width: 100%;}
+    }
+    .label {
+      margin-top:2px;
+      margin-bottom:2px;
+    }
+    ion-content {
+      --ion-background-color: #ebebeb;
+  }
+  .toolbar-background {
+      --background: #003662;
+      --ion-color-base: transparent !important;
+      }
+  .rounded {
+      margin-left:2%;
+      margin-right:2%;
+      background-color: #fff;
+      border: 1px solid #f2f2f2 ;
+      border-radius: 10px ;
+      -moz-border-radius: 10px ;
+      -webkit-border-radius: 10px ;
+  }
+  .rounded1 {
+    margin-left:1%;
+    margin-right:1%;
+    background-color: #fff;
+}
+  .middle{
+    vertical-align: middle;
+    display: flex!important;
+    padding-top:5%;
+}
+.h2margins {
+  margin-top:5px;
+  margin-bottom:5px;
+}
+}
+
+page-home1 {
+  .segment-activated.segment-button{
+      background-color:#003662 !important;
+      color:#fff !important; //as suggested by @Mr_Perfect
+      border-color:#003662 !important;
+    }
+    .segment-button {
+      background-color:#0084d4 !important;
+      color:#fff !important; //as suggested by @Mr_Perfect
+      border-color:#fff !important;
+    }
+    .label {
+      margin-right: 0 ;
+      padding-right:0px;
+    }
+    .center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 50%;
+  }
+  .mining{
+    border-left: 5px solid green !important;
+  }
+  .nomining{
+    border-left: 5px solid white;
+  }
+  .custom-popover .popover-content {
+    width: 80%;
+    top: 70px;
+    left: 30px;
+    bottom: 70px
+  }
+  .label {
+    margin: 0 0 0 0 ;
+    padding-right:0px;
+  }
+}
+
