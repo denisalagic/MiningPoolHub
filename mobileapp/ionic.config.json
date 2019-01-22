@@ -1,0 +1,7 @@
+{
+  "name": "Mining Pool Hub",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
